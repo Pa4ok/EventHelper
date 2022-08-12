@@ -3,14 +3,13 @@ package com.gamerforea.eventhelper;
 import com.gamerforea.eventhelper.command.CommandReloadAllConfigs;
 import com.gamerforea.eventhelper.config.ConfigUtils;
 import com.gamerforea.eventhelper.inject.WGInjection;
+import com.gamerforea.eventhelper.util.RuntimeUtils;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,12 +25,13 @@ import java.util.List;
 
 import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 
-@SideOnly(Side.SERVER)
 @Mod(modid = "EventHelper", name = "EventHelper", version = "@VERSION@", acceptableRemoteVersions = "*")
 public final class EventHelper
 {
+	public static final boolean SERVER_START = RuntimeUtils.detectBukkit() && !RuntimeUtils.detectIdea();
 	public static final Logger LOGGER = LogManager.getLogger("EventHelper");
-	public static final File cfgDir = new File(Loader.instance().getConfigDir(), "Events");
+	public static final File CONFIG_DIR = new File(Loader.instance().getConfigDir(), "Events");
+
 	public static final List<RegisteredListener> listeners = Lists.newArrayList();
 	public static String craftPackage = "org.bukkit.craftbukkit.v1_7_R4";
 	public static boolean explosions = true;
@@ -40,12 +40,20 @@ public final class EventHelper
 	@EventHandler
 	public void onServerStart(FMLServerStartingEvent event)
 	{
+		if(!SERVER_START) {
+			return;
+		}
+
 		event.registerServerCommand(new CommandReloadAllConfigs());
 	}
 
 	@EventHandler
 	public final void serverStarted(FMLServerStartedEvent event)
 	{
+		if(!SERVER_START) {
+			return;
+		}
+
 		Configuration cfg = ConfigUtils.getConfig("EventHelper");
 		String c = CATEGORY_GENERAL;
 		craftPackage = cfg.getString("craftPackage", c, craftPackage, "CraftBukkit package (for reflection)");

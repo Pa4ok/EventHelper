@@ -57,7 +57,7 @@ public final class ConfigUtils
 	@Nonnull
 	public static Configuration getConfig(@Nonnull String cfgName)
 	{
-		Configuration cfg = new Configuration(new File(EventHelper.cfgDir, cfgName + ".cfg"));
+		Configuration cfg = new Configuration(new File(EventHelper.CONFIG_DIR, cfgName + ".cfg"));
 		cfg.load();
 		return cfg;
 	}
