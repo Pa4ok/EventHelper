@@ -25,14 +25,14 @@ import java.util.List;
 
 import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 
+@SuppressWarnings({"unchecked", "rawtypes"})
 @Mod(modid = "EventHelper", name = "EventHelper", version = "@VERSION@", acceptableRemoteVersions = "*")
 public final class EventHelper
 {
 	public static final boolean SERVER_START = RuntimeUtils.detectBukkit() && !RuntimeUtils.detectIdea();
 	public static final Logger LOGGER = LogManager.getLogger("EventHelper");
 	public static final File CONFIG_DIR = new File(Loader.instance().getConfigDir(), "Events");
-
-	public static final List<RegisteredListener> listeners = Lists.newArrayList();
+	public static final List listeners = Lists.newArrayList();
 	public static String craftPackage = "org.bukkit.craftbukkit.v1_7_R4";
 	public static boolean explosions = true;
 	public static boolean debug = true;
@@ -40,20 +40,26 @@ public final class EventHelper
 	@EventHandler
 	public void onServerStart(FMLServerStartingEvent event)
 	{
-		if(!SERVER_START) {
-			return;
+		if(SERVER_START) {
+			onServerStartSage(event);
 		}
-
-		event.registerServerCommand(new CommandReloadAllConfigs());
 	}
 
 	@EventHandler
-	public final void serverStarted(FMLServerStartedEvent event)
+	public void serverStarted(FMLServerStartedEvent event)
 	{
-		if(!SERVER_START) {
-			return;
+		if(SERVER_START) {
+			serverStartedSafe(event);
 		}
+	}
 
+	private void onServerStartSage(FMLServerStartingEvent event)
+	{
+		event.registerServerCommand(new CommandReloadAllConfigs());
+	}
+
+	private void serverStartedSafe(FMLServerStartedEvent event)
+	{
 		Configuration cfg = ConfigUtils.getConfig("EventHelper");
 		String c = CATEGORY_GENERAL;
 		craftPackage = cfg.getString("craftPackage", c, craftPackage, "CraftBukkit package (for reflection)");
@@ -69,13 +75,13 @@ public final class EventHelper
 		WGInjection.init();
 	}
 
-	public static void callEvent(Event event)
+	public static void callEvent(Object event)
 	{
-		for (RegisteredListener listener : listeners)
+		for (RegisteredListener listener : (List<RegisteredListener>)listeners)
 		{
 			try
 			{
-				listener.callEvent(event);
+				listener.callEvent((Event) event);
 			}
 			catch (Throwable throwable)
 			{
