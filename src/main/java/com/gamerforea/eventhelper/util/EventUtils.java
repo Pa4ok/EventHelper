@@ -26,6 +26,8 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static com.gamerforea.eventhelper.util.ConvertUtils.*;
@@ -158,6 +160,16 @@ public final class EventUtils
             return true;
         }
     }
+
+	public static List<String> getRegions(@Nonnull World world, int x, int y, int z)
+	{
+		try {
+			return WGInjection.INSTANCE.getRegions(ConvertUtils.toBukkitWorld(world), x, y, z);
+		} catch (Throwable t) {
+			EventHelper.error(t, "Failed get regions [World: {}, X: {}, Y: {}, Z: {}]", world.getWorldInfo().getWorldName(), x, y, z);
+			return new ArrayList<>();
+		}
+	}
 
     public static boolean isInPrivate(@Nonnull World world, int x, int y, int z)
 	{

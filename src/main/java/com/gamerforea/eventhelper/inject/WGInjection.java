@@ -8,6 +8,8 @@ import lombok.SneakyThrows;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public final class WGInjection
 {
     public static WGInjection INSTANCE;
@@ -39,5 +41,10 @@ public final class WGInjection
     public boolean isPrivateOwner(Player player, int x, int y, int z) {
         WorldGuardPlugin wg = WorldGuardPlugin.inst();
         return wg.getRegionManager(player.getWorld()).getApplicableRegions(new Vector(x, y, z)).isOwnerOfAll(wg.wrapPlayer(player, true));
+    }
+
+    public List<String> getRegions(World world, int x, int y, int z) {
+        WorldGuardPlugin wg = WorldGuardPlugin.inst();
+        return wg.getRegionManager(world).getApplicableRegionsIDs(new Vector(x, y, z));
     }
 }
