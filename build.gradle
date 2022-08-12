@@ -1,37 +1,43 @@
 buildscript {
-	repositories {
-		mavenCentral()
-		maven {
-			name = "forge"
-			url = "http://files.minecraftforge.net/maven"
-		}
-		maven {
-			name = "sonatype"
-			url = "https://oss.sonatype.org/content/repositories/snapshots/"
-		}
-	}
-	dependencies {
-		classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
-	}
+    repositories {
+        mavenCentral()
+        maven {
+            name = "forge"
+            url = "https://maven.minecraftforge.net/"
+        }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+    dependencies {
+        classpath ('com.anatawa12.forge:ForgeGradle:1.2-1.0.+') {
+            changing = true
+        }
+    }
 }
 
-repositories {
-	flatDir {
-		dirs 'lib'
-	}
+plugins {
+    id 'java-library'
 }
 
 apply plugin: 'forge'
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-version = "1.7.10-1.13.1"
-group= "com.gamerforea"
-archivesBaseName = "EventHelper"
-
 sourceCompatibility = targetCompatibility = '1.8'
 compileJava {
 	sourceCompatibility = targetCompatibility = '1.8'
+}
+
+version = "1.7.10-1.13.1-pa4ok"
+group= "com.gamerforea"
+archivesBaseName = "EventHelper"
+
+repositories {
+	flatDir {
+		dirs 'lib'
+	}
 }
 
 minecraft {
@@ -45,19 +51,38 @@ dependencies {
 	compile name: 'worldedit-6.1'
 	compile name: 'worldguard-6.1'
 	compile name: 'GriefPreventionPlus-13.3'
+	
+	compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = "sources"
+    from sourceSets.main.allSource
 }
 
 task devJar(type: Jar) {
-	classifier = 'dev'
-	from sourceSets.main.output
-}
-
-task sourcesJar(type: Jar) {
-	classifier = 'sources'
-	from sourceSets.main.allSource
+    classifier = "dev"
+    from sourceSets.main.output
 }
 
 artifacts {
-	archives devJar
-	archives sourcesJar
+    archives sourcesJar
+    archives devJar
+}
+
+sourceSets {
+    main {
+        output.resourcesDir = file('build/classes/java/main')
+    }
 }
