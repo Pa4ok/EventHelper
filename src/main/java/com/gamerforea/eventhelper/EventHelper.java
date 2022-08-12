@@ -2,7 +2,7 @@ package com.gamerforea.eventhelper;
 
 import com.gamerforea.eventhelper.command.CommandReloadAllConfigs;
 import com.gamerforea.eventhelper.config.ConfigUtils;
-import com.gamerforea.eventhelper.inject.InjectionManager;
+import com.gamerforea.eventhelper.inject.WGInjection;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
@@ -19,7 +19,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredListener;
 
 import java.io.File;
@@ -49,24 +48,17 @@ public final class EventHelper
 	{
 		Configuration cfg = ConfigUtils.getConfig("EventHelper");
 		String c = CATEGORY_GENERAL;
-		String[] plugins = cfg.getStringList("plugins", c, new String[] { "WorldGuard", "GriefPreventionPlus" }, "Plugins for sending events");
-		boolean pluginHooking = cfg.getBoolean("pluginHooking", c, true, "Hooking plugins (allow checking regions)");
 		craftPackage = cfg.getString("craftPackage", c, craftPackage, "CraftBukkit package (for reflection)");
 		explosions = cfg.getBoolean("explosions", c, explosions, "Explosions enabled");
 		debug = cfg.getBoolean("debug", c, debug, "Debugging enabled");
 		cfg.save();
 
-		PluginManager plManager = Bukkit.getPluginManager();
-		for (String plName : plugins)
-		{
-			Plugin plugin = plManager.getPlugin(plName);
-			if (plugin == null)
-				LOGGER.warn("Plugin {} not found!", plName);
-			else
-				listeners.addAll(HandlerList.getRegisteredListeners(plugin));
+		Plugin wg = Bukkit.getPluginManager().getPlugin("WorldGuard");
+		if(wg == null) {
+			throw new RuntimeException("WorldGuard plugin not found");
 		}
-		if (pluginHooking)
-			InjectionManager.init();
+		listeners.addAll(HandlerList.getRegisteredListeners(wg));
+		WGInjection.init();
 	}
 
 	public static void callEvent(Event event)

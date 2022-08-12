@@ -50,7 +50,6 @@ dependencies {
 	compile name: 'bukkit-1.7.10'
 	compile name: 'worldedit-6.1'
 	compile name: 'worldguard-6.1'
-	compile name: 'GriefPreventionPlus-13.3'
 	
 	compileOnly 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'

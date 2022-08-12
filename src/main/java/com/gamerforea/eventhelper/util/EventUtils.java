@@ -1,7 +1,7 @@
 package com.gamerforea.eventhelper.util;
 
 import com.gamerforea.eventhelper.EventHelper;
-import com.gamerforea.eventhelper.inject.InjectionManager;
+import com.gamerforea.eventhelper.inject.WGInjection;
 import com.gamerforea.eventhelper.util.function.ThrowableFunction;
 import com.gamerforea.eventhelper.util.function.TriFunction;
 import com.google.common.base.Strings;
@@ -187,7 +187,7 @@ public final class EventUtils
 	{
 		try
 		{
-			return InjectionManager.isInPrivate(toBukkitWorld(world), x, y, z);
+			return WGInjection.INSTANCE.isInPrivate(toBukkitWorld(world), x, y, z);
 		}
 		catch (Throwable throwable)
 		{
@@ -208,7 +208,7 @@ public final class EventUtils
 	{
 		try
 		{
-			return InjectionManager.isPrivateMember(toBukkitEntity(player), x, y, z);
+			return WGInjection.INSTANCE.isPrivateMember(toBukkitEntity(player), x, y, z);
 		}
 		catch (Throwable throwable)
 		{
@@ -229,7 +229,7 @@ public final class EventUtils
 	{
 		try
 		{
-			return InjectionManager.isPrivateOwner(toBukkitEntity(player), x, y, z);
+			return WGInjection.INSTANCE.isPrivateOwner(toBukkitEntity(player), x, y, z);
 		}
 		catch (Throwable throwable)
 		{
