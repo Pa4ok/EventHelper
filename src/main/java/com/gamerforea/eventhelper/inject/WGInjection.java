@@ -12,39 +12,40 @@ import java.util.List;
 
 public final class WGInjection
 {
-    public static WGInjection INSTANCE;
-
     @SneakyThrows
-    public static void init()
+    public static PluginInjection getInjection()
 	{
         Class<?> clazz = InjectionUtils.injectClass("WorldGuard", WGInjection.class);
         if(clazz == null) {
             throw new RuntimeException("something wrong while worldguard injection");
         }
 
-        INSTANCE = (WGInjection) clazz.newInstance();
+        return  (PluginInjection) clazz.newInstance();
     }
 
-    public boolean isInPrivate(World world, int x, int y, int z) {
-        for (ProtectedRegion region : WorldGuardPlugin.inst().getRegionManager(world).getApplicableRegions(new Vector(x, y, z))) {
-            if (!region.getId().equals(ProtectedRegion.GLOBAL_REGION))
-                return true;
+    public static final class Inj implements PluginInjection
+    {
+        public boolean isInPrivate(World world, int x, int y, int z) {
+            for (ProtectedRegion region : WorldGuardPlugin.inst().getRegionManager(world).getApplicableRegions(new Vector(x, y, z))) {
+                if (!region.getId().equals(ProtectedRegion.GLOBAL_REGION))
+                    return true;
+            }
+            return false;
         }
-        return false;
-    }
 
-    public boolean isPrivateMember(Player player, int x, int y, int z) {
-        WorldGuardPlugin wg = WorldGuardPlugin.inst();
-        return wg.getRegionManager(player.getWorld()).getApplicableRegions(new Vector(x, y, z)).isMemberOfAll(wg.wrapPlayer(player, true));
-    }
+        public boolean isPrivateMember(Player player, int x, int y, int z) {
+            WorldGuardPlugin wg = WorldGuardPlugin.inst();
+            return wg.getRegionManager(player.getWorld()).getApplicableRegions(new Vector(x, y, z)).isMemberOfAll(wg.wrapPlayer(player, true));
+        }
 
-    public boolean isPrivateOwner(Player player, int x, int y, int z) {
-        WorldGuardPlugin wg = WorldGuardPlugin.inst();
-        return wg.getRegionManager(player.getWorld()).getApplicableRegions(new Vector(x, y, z)).isOwnerOfAll(wg.wrapPlayer(player, true));
-    }
+        public boolean isPrivateOwner(Player player, int x, int y, int z) {
+            WorldGuardPlugin wg = WorldGuardPlugin.inst();
+            return wg.getRegionManager(player.getWorld()).getApplicableRegions(new Vector(x, y, z)).isOwnerOfAll(wg.wrapPlayer(player, true));
+        }
 
-    public List<String> getRegions(World world, int x, int y, int z) {
-        WorldGuardPlugin wg = WorldGuardPlugin.inst();
-        return wg.getRegionManager(world).getApplicableRegionsIDs(new Vector(x, y, z));
+        public List<String> getRegions(World world, int x, int y, int z) {
+            WorldGuardPlugin wg = WorldGuardPlugin.inst();
+            return wg.getRegionManager(world).getApplicableRegionsIDs(new Vector(x, y, z));
+        }
     }
 }

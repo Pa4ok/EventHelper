@@ -2,23 +2,25 @@ package com.gamerforea.eventhelper.util;
 
 public class RuntimeUtils
 {
-    public static boolean detectBukkit()
+    private static boolean detect(String cls)
     {
         try {
-            Class.forName("org.bukkit.Bukkit");
+            Class.forName(cls);
             return true;
-        } catch (Throwable t) {
+        } catch (Throwable ignored) {
             return false;
         }
     }
 
-    public static boolean detectIdea()
-    {
-        try {
-            Class.forName("com.intellij.rt.execution.application.AppMainV2");
-            return true;
-        } catch (Throwable t) {
-            return false;
-        }
+    public static boolean detectBukkit() {
+        return detect("org.bukkit.Bukkit");
+    }
+
+    public static boolean detectIdea() {
+        return detect("com.intellij.rt.execution.application.AppMainV2");
+    }
+
+    public static boolean detectThermos() {
+        return detect("thermos.Thermos");
     }
 }

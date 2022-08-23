@@ -2,7 +2,7 @@ package com.gamerforea.eventhelper;
 
 import com.gamerforea.eventhelper.command.CommandReloadAllConfigs;
 import com.gamerforea.eventhelper.config.ConfigUtils;
-import com.gamerforea.eventhelper.inject.WGInjection;
+import com.gamerforea.eventhelper.util.EventUtils;
 import com.gamerforea.eventhelper.util.RuntimeUtils;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Loader;
@@ -72,7 +72,7 @@ public final class EventHelper
 			throw new RuntimeException("WorldGuard plugin not found");
 		}
 		listeners.addAll(HandlerList.getRegisteredListeners(wg));
-		WGInjection.init();
+		EventUtils.init();
 	}
 
 	public static void callEvent(Object event)

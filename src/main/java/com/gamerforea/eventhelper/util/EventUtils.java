@@ -1,6 +1,7 @@
 package com.gamerforea.eventhelper.util;
 
 import com.gamerforea.eventhelper.EventHelper;
+import com.gamerforea.eventhelper.inject.PluginInjection;
 import com.gamerforea.eventhelper.inject.WGInjection;
 import com.gamerforea.eventhelper.util.function.ThrowableFunction;
 import com.gamerforea.eventhelper.util.function.TriFunction;
@@ -35,6 +36,12 @@ import static net.minecraft.util.MathHelper.floor_double;
 
 public final class EventUtils
 {
+    public static PluginInjection INJECTION;
+
+    public static void init() {
+        INJECTION = WGInjection.getInjection();
+    }
+
     public static boolean cantBreak(@Nonnull EntityPlayer player, int x, int y, int z)
 	{
         try {
@@ -164,7 +171,7 @@ public final class EventUtils
 	public static List<String> getRegions(@Nonnull World world, int x, int y, int z)
 	{
 		try {
-			return WGInjection.INSTANCE.getRegions(ConvertUtils.toBukkitWorld(world), x, y, z);
+			return INJECTION.getRegions(ConvertUtils.toBukkitWorld(world), x, y, z);
 		} catch (Throwable t) {
 			EventHelper.error(t, "Failed get regions [World: {}, X: {}, Y: {}, Z: {}]", world.getWorldInfo().getWorldName(), x, y, z);
 			return new ArrayList<>();
@@ -174,7 +181,7 @@ public final class EventUtils
     public static boolean isInPrivate(@Nonnull World world, int x, int y, int z)
 	{
         try {
-            return WGInjection.INSTANCE.isInPrivate(toBukkitWorld(world), x, y, z);
+            return INJECTION.isInPrivate(toBukkitWorld(world), x, y, z);
         } catch (Throwable throwable) {
             EventHelper.error(throwable, "Failed check private: [World: {}, X: {}, Y: {}, Z: {}]", world.getWorldInfo().getWorldName(), x, y, z);
             return true;
@@ -192,7 +199,7 @@ public final class EventUtils
     public static boolean isPrivateMember(@Nonnull EntityPlayer player, int x, int y, int z)
 	{
         try {
-            return WGInjection.INSTANCE.isPrivateMember(toBukkitEntity(player), x, y, z);
+            return INJECTION.isPrivateMember(toBukkitEntity(player), x, y, z);
         } catch (Throwable throwable) {
             EventHelper.error(throwable, "Failed check private member: [Player: {}, X: {}, Y: {}, Z: {}]", String.valueOf(player), x, y, z);
             return true;
@@ -210,7 +217,7 @@ public final class EventUtils
     public static boolean isPrivateOwner(@Nonnull EntityPlayer player, int x, int y, int z)
 	{
         try {
-            return WGInjection.INSTANCE.isPrivateOwner(toBukkitEntity(player), x, y, z);
+            return INJECTION.isPrivateOwner(toBukkitEntity(player), x, y, z);
         } catch (Throwable throwable) {
             EventHelper.error(throwable, "Failed check private owner: [Player: {}, X: {}, Y: {}, Z: {}]", String.valueOf(player), x, y, z);
             return true;
