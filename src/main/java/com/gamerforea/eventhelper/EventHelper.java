@@ -31,7 +31,7 @@ public final class EventHelper
 {
 	public static final boolean SERVER_START = RuntimeUtils.detectBukkit() && !RuntimeUtils.detectIdea();
 	public static final Logger LOGGER = LogManager.getLogger("EventHelper");
-	public static final File CONFIG_DIR = new File(Loader.instance().getConfigDir(), "Events");
+	public static final File cfgDir = new File(Loader.instance().getConfigDir(), "Events");
 	public static final List listeners = Lists.newArrayList();
 	public static String craftPackage = "org.bukkit.craftbukkit.v1_7_R4";
 	public static boolean explosions = true;
